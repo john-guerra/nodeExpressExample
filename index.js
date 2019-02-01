@@ -1,4 +1,20 @@
 var express = require("express");
+var fs = require("fs");
+ 
+
+function loadTweets(callback) {
+    fs.readFile("./tweets.json", "utf8", function(err, contents) {
+        if (err) throw err;
+
+
+        var tweets = JSON.parse(contents);
+        console.log("I loaded " + tweets.length + " tweets");
+
+        callback(tweets);
+    });
+
+        
+}
 
 
 var app = express();
@@ -7,8 +23,10 @@ var app = express();
 app.use(express.static("public"));
 
 app.get("/api", function(req, res) {
-    console.log("Request on /");
-    res.send("Hola World!");
+    loadTweets(function(tweets) {
+        res.send(tweets);
+    });
+    
 });
 
 
